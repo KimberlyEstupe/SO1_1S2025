@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # Función para generar un nombre de contenedor único
-generar_nombre_contenedor() {
-    # Usar /dev/urandom para generar un nombre aleatorio
-    echo "contenedor_$(od -An -N2 -i /dev/urandom | tr -d ' ')"
-}
 
-# Array de tipos de contenedores
-tipos=("ram" "cpu" "io" "disco")
+declare -a tipos=("ram" "cpu" "io" "disk")
+
+# Elegir un tipo de contenedor aleatorio
+tipo=${tipos[$RANDOM % ${#tipos[@]}]}
+
+# Generar un nombre único para el contenedor
+nombre_contenedor="contenedor_$tipo_$(date +%s%N | cut -b1-10)_$RANDOM"
+
 
 # Crear 10 contenedores aleatorios
 for i in {1..10}; do
@@ -18,17 +20,19 @@ for i in {1..10}; do
     case $tipo in
         ram)
             docker run -d --name "$nombre" containerstack/alpine-stress -m 512M
+            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
             ;;
         cpu)
             docker run -d --name "$nombre" containerstack/alpine-stress -c 1
+            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
             ;;
         io)
             docker run -d --name "$nombre" containerstack/alpine-stress -i 1
+            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
             ;;
         disco)
-            docker run -d --name "$nombre" containerstack/alpine-stress -d 1G
+            docker run -d --name "$nombre" containerstack/alpine-stress -d 512M
+            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
             ;;
     esac
 done
-
-

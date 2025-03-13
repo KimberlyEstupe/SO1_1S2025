@@ -1,0 +1,1 @@
+savedcmd_/home/kimberly/Documentos/Sis_Operativos/Lab_Tareas/SO1_1S2025/Proyecto1/Modulos/Module.symvers :=  scripts/mod/modpost -M  -a    -N  -o /home/kimberly/Documentos/Sis_Operativos/Lab_Tareas/SO1_1S2025/Proyecto1/Modulos/Module.symvers -n -T /home/kimberly/Documentos/Sis_Operativos/Lab_Tareas/SO1_1S2025/Proyecto1/Modulos/modules.order -i Module.symvers -e 

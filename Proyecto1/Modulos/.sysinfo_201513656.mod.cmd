@@ -1,0 +1,1 @@
+savedcmd_/home/kimberly/Documentos/Sis_Operativos/Lab_Tareas/SO1_1S2025/Proyecto1/Modulos/sysinfo_201513656.mod := printf '%s\n'   sysinfo_201513656.o | awk '!x[$$0]++ { print("/home/kimberly/Documentos/Sis_Operativos/Lab_Tareas/SO1_1S2025/Proyecto1/Modulos/"$$0) }' > /home/kimberly/Documentos/Sis_Operativos/Lab_Tareas/SO1_1S2025/Proyecto1/Modulos/sysinfo_201513656.mod
