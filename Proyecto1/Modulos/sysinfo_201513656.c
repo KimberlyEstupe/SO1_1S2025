@@ -107,6 +107,7 @@ static int sysinfo_show(struct seq_file *m, void *v) {
         first_process para saber si es el primer proceso
     */
     struct sysinfo si;
+    struct mm_struct *mm;
     struct task_struct *task;
     unsigned long total_jiffies = jiffies;
     int first_process = 1;
@@ -133,7 +134,6 @@ static int sysinfo_show(struct seq_file *m, void *v) {
             unsigned long mem_usage = 0;
             unsigned long cpu_usage = 0;
             char *cmdline = NULL;
-
             /* 
                 Obtenemos el tiempo total de CPU de un proceso
                 Obtenemos el tiempo total de CPU de todos los procesos
@@ -156,6 +156,8 @@ static int sysinfo_show(struct seq_file *m, void *v) {
             seq_printf(m, "    \"Cmdline\": \"%s\",\n", cmdline ? cmdline : "N/A");
             seq_printf(m, "    \"MemoryUsage\": %lu.%02lu,\n", mem_usage / 100, mem_usage % 100);
             seq_printf(m, "    \"CPUUsage\": %lu.%02lu,\n", cpu_usage / 100, cpu_usage % 100);
+            seq_printf(m, "    \"DiskUsege\": %lu,\n", mm->total_vm << (PAGE_SHIFT - 10));
+            seq_printf(m, "    \"IO\": {\n      \"ReadBytes\": %llu,\n      \"WriteBytes\": %llu\n    },\n", task->ioac.read_bytes, task->ioac.write_bytes);
             seq_printf(m, "  }");
 
 

@@ -1,38 +1,34 @@
 #!/bin/bash
 
-# Función para generar un nombre de contenedor único
+# Función para generar un nombre de contenedor aleatorio
+generate_container_name() {
+    # Usar /dev/urandom para generar un nombre único
+    echo "container_$(date +%s%N | cut -b1-10)_$RANDOM"
+}
 
-declare -a tipos=("ram" "cpu" "io" "disk")
+# Función para crear contenedores aleatorios
+create_random_containers() {
+    for i in {1..10}; do
+        # Elegir aleatoriamente un tipo de contenedor
+        case $((RANDOM % 4)) in
+            0) 
+                docker run -d --name "cpu_$(generate_container_name)" containerstack/alpine-stress stress --cpu 1
+                ;;
+            1) 
+                docker run -d --name "ram_$(generate_container_name)" containerstack/alpine-stress stress --vm 1 --vm-bytes 128M
+                ;;
+            2) 
+                docker run -d --name "ino_$(generate_container_name)" containerstack/alpine-stress stress --io 1
+                ;;
+            3) 
+                docker run -d --name "disk_$(generate_container_name)" containerstack/alpine-stress stress --hdd 1 --hdd-bytes 128M
+                ;;
+        esac
+    done
+}
 
-# Elegir un tipo de contenedor aleatorio
-tipo=${tipos[$RANDOM % ${#tipos[@]}]}
-
-# Generar un nombre único para el contenedor
-nombre_contenedor="contenedor_$tipo_$(date +%s%N | cut -b1-10)_$RANDOM"
-
-
-# Crear 10 contenedores aleatorios
-for i in {1..10}; do
-    tipo=${tipos[$RANDOM % ${#tipos[@]}]}  # Seleccionar un tipo aleatorio
-    nombre=$(generar_nombre_contenedor)    # Generar un nombre único
-
-    # Crear el contenedor según el tipo
-    case $tipo in
-        ram)
-            docker run -d --name "$nombre" containerstack/alpine-stress -m 512M
-            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
-            ;;
-        cpu)
-            docker run -d --name "$nombre" containerstack/alpine-stress -c 1
-            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
-            ;;
-        io)
-            docker run -d --name "$nombre" containerstack/alpine-stress -i 1
-            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
-            ;;
-        disco)
-            docker run -d --name "$nombre" containerstack/alpine-stress -d 512M
-            echo "Contenedor creado: $nombre_contenedor (Tipo: $tipo)"
-            ;;
-    esac
+# Cronjob que ejecuta el script cada 30 segundos
+while true; do
+    create_random_containers
+    sleep 30
 done

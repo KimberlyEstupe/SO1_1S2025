@@ -1,42 +1,38 @@
 # Contenedores Docker
 ### Iniciar Docker
-
 ```bash
 sudo systemctl start docker
 ```
 
 ### Iniciar todos contenedores
-
 ```bash
 sudo docker start $(sudo docker ps -a -q)
 ```
 
 ### Contenedores de stress
 ```bash
-# stress de ram, genera carga en el subsistema de memoria(RAM) utilizando 512 megabytes.
-docker run -d --name "$nombre" containerstack/alpine-stress -m 512M
+# stress de ram, genera carga en el subsistema de memoria(RAM) utilizando 128 megabytes.
+docker run -d --name "ram_$(generate_container_name)" containerstack/alpine-stress stress --vm 1 --vm-bytes 128M
 
 # CPU: el contenedor estará ejecutando una carga de trabajo que utiliza un núcleo de CPU
-docker run -d --name "$nombre" containerstack/alpine-stress -c 1
+docker run -d --name "cpu_$(generate_container_name)" containerstack/alpine-stress stress --cpu 1
 
 #I/O: genera carga en el subsistema de I/O (Input/Output) con un solo proceso
-docker run -d --name "$nombre" containerstack/alpine-stress -i 1
+ocker run -d --name "ino_$(generate_container_name)" containerstack/alpine-stress stress --io 1
 
-# Disco, el contenedor estará realizando operaciones de escritura y lectura en disco, utilizando 512M de datos. 
-# Generando carga en el Disco
-docker run -d --name "$nombre" containerstack/alpine-stress -d 512M
+# Disco, el contenedor estará realizando operaciones de escritura y lectura en disco, utilizando 128 de datos. Generando carga en el Disco
+docker run -d --name "disk_$(generate_container_name)" containerstack/alpine-stress stress --hdd 1 --hdd-bytes 128M
 ```
 
+### Detener todos los contenedores en ejecución
+```bash
+docker stop $(docker ps -aq)
+```
 
 ### Eliminar todos los contenedores 
 ```bash
 docker rm $(docker ps -aq)
-
-# Ver imagenes construidas por medio de docker build
-docker images
-```  
-
-
+```
 
 # Cronjob
 ### Modificacion de Cronjob
@@ -74,7 +70,6 @@ lsmod | grep sysinfo_201513656
 ### Acceder al archivo en /proc
 Ir ala carpeta proc dentro de la carpeta Modulos
 ```bash
-/proc
 cat /proc/sysinfo_201513656
 ``` 
 
@@ -82,4 +77,21 @@ cat /proc/sysinfo_201513656
 ### Eliminar Modulo
 ```bash
 sudo rmmod sysinfo_201513656
+```  
+
+# Servicio en Rust
+crear programa
+```bash
+cargo new service_rust
+```
+
+en cargo.toml copia en las dependencias 
+```bash
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+```
+
+Para ejecutar el servicio, desde el directorio src usar:
+```bash
+cargo run
 ```
