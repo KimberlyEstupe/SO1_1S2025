@@ -22,7 +22,7 @@ MODULE_AUTHOR("Kimberly Julissa Estupe Chen - 201513656");
 MODULE_DESCRIPTION("Módulo para capturar métricas del sistema y contenedores");
 MODULE_VERSION("1.0");
 
-#define PROC_NAME "sysinfo_201513656"
+#define PROC_NAME "sysinfo"
 #define MAX_CMDLINE_LENGTH 256
 #define CONTAINER_ID_LENGTH 64
 
@@ -107,7 +107,6 @@ static int sysinfo_show(struct seq_file *m, void *v) {
         first_process para saber si es el primer proceso
     */
     struct sysinfo si;
-    struct mm_struct *mm;
     struct task_struct *task;
     unsigned long total_jiffies = jiffies;
     int first_process = 1;
@@ -131,6 +130,10 @@ static int sysinfo_show(struct seq_file *m, void *v) {
     // Iteramos sobre los procesos
     for_each_process(task) {
         if (strcmp(task->comm, "containerd-shim") == 0) {
+            struct mm_struct *mm = get_task_mm(task);
+            if (!mm) {
+                continue; // Si no hay mm, saltar este proceso
+            }
             unsigned long mem_usage = 0;
             unsigned long cpu_usage = 0;
             char *cmdline = NULL;
@@ -165,6 +168,8 @@ static int sysinfo_show(struct seq_file *m, void *v) {
             if (cmdline) {
                 kfree(cmdline);
             }
+
+            mmput(mm); // Liberar mm después de usarlo
         }
     }
 

@@ -1,4 +1,4 @@
-obj-m += sysinfo_201513656.o
+obj-m += sysinfo.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
