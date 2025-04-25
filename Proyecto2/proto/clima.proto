@@ -1,0 +1,25 @@
+// proto/weather.proto
+syntax = "proto3";
+
+package weather;
+
+option go_package = "weather-app/proto";
+
+service WeatherService {
+  rpc ProcessWeatherTweets(WeatherTweetBatch) returns (ProcessResponse);
+}
+
+message WeatherTweet {
+  string description = 1;
+  string country = 2;
+  string weather = 3;
+}
+
+message WeatherTweetBatch {
+  repeated WeatherTweet tweets = 1;
+}
+
+message ProcessResponse {
+  bool success = 1;
+  string message = 2;
+}
