@@ -1,12 +1,1 @@
-# Componentes2 API REST en go +grpc Client
-# Componente3
-# Componente4
-# Componente5
-
-
-# go-api/main.go (API REST en Go)
-# grpc-server/server.go (gRPC Server en Go)
-# grpc-server/rabbit_client.go (RabbitMQ Writer)
-# grpc-server/kafka_client.go (Kafka Writer)
-
 Proyecto2/rust-api/target
