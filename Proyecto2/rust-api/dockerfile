@@ -1,0 +1,20 @@
+# Dockerfile para la API REST en Rust
+FROM rust:1.67 as builder
+
+WORKDIR /usr/src/app
+COPY . .
+
+# Instalar dependencias
+RUN cargo build --release
+
+FROM debian:bullseye-slim
+WORKDIR /app
+
+# Copiar el binario compilado
+COPY --from=builder /usr/src/app/target/release/weather-api /app/
+
+# Instalar dependencias de runtime
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8000
+CMD ["./weather-api"]
