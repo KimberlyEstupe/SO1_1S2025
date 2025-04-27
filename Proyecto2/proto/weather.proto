@@ -1,4 +1,3 @@
-// proto/weather.proto
 syntax = "proto3";
 
 package weather;
