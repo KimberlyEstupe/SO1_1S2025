@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package weather;
+option go_package = "weather/proto";
+
+message WeatherData {
+  string descripcion = 1;
+  string pais = 2;
+  string clima = 3;
+}
+
+message WeatherDataList {
+  repeated WeatherData data = 1;
+}
+
+message PublishResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+service WeatherService {
+  rpc PublishToRabbitMQ(WeatherDataList) returns (PublishResponse);
+  rpc PublishToKafka(WeatherDataList) returns (PublishResponse);
+}
