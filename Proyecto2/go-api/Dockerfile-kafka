@@ -8,6 +8,7 @@ RUN go mod init weather && \
     go get google.golang.org/grpc && \
     go get google.golang.org/protobuf/cmd/protoc-gen-go && \
     go get google.golang.org/grpc/cmd/protoc-gen-go-grpc && \
+    go get github.com/segmentio/kafka-go && \
     go install google.golang.org/protobuf/cmd/protoc-gen-go && \
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
@@ -20,7 +21,7 @@ COPY proto/weather.proto ./proto/
 RUN protoc --go_out=. --go-grpc_out=. ./proto/weather.proto
 
 # Build the application
-RUN cd grpc-client && go build -o /app/server
+RUN cd grpc-server-kafka && go build -o /app/server
 
 # Final stage
 FROM debian:bookworm-slim
@@ -32,6 +33,6 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 
 COPY --from=builder /app/server /app/server
 
-EXPOSE 8080
+EXPOSE 50052
 
 CMD ["/app/server"]

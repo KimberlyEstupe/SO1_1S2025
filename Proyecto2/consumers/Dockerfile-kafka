@@ -1,0 +1,22 @@
+FROM golang:1.21 as builder
+
+WORKDIR /app
+
+COPY kafka-consumer/ .
+
+RUN go mod init kafka-consumer && \
+    go get github.com/segmentio/kafka-go && \
+    go get github.com/go-redis/redis/v8 && \
+    go build -o /app/consumer
+
+# Final stage
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+# Install ca-certificates for HTTPS
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/consumer /app/consumer
+
+CMD ["/app/consumer"]
