@@ -1,0 +1,131 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-api-service
+  namespace: proyecto2
+spec:
+  selector:
+    app: go-api
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-api
+  namespace: proyecto2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-api
+  template:
+    metadata:
+      labels:
+        app: go-api
+    spec:
+      containers:
+      - name: go-api
+        image: localhost:5000/proyecto2/go-api:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GRPC_SERVER_ADDR
+          value: "grpc-service:50051"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-service
+  namespace: proyecto2
+spec:
+  selector:
+    app: grpc-rabbitmq
+  ports:
+  - port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-rabbitmq
+  namespace: proyecto2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: grpc-rabbitmq
+    spec:
+      containers:
+      - name: grpc-rabbitmq
+        image: localhost:5000/proyecto2/grpc-rabbitmq:latest
+        ports:
+        - containerPort: 50051
+        env:
+        - name: RABBITMQ_URL
+          value: "amqp://guest:guest@rabbitmq:5672/"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpc-kafka
+  namespace: proyecto2
+spec:
+  selector:
+    app: grpc-kafka
+  ports:
+  - port: 50052
+    targetPort: 50052
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpc-kafka
+  namespace: proyecto2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpc-kafka
+  template:
+    metadata:
+      labels:
+        app: grpc-kafka
+    spec:
+      containers:
+      - name: grpc-kafka
+        image: localhost:5000/proyecto2/grpc-kafka:latest
+        ports:
+        - containerPort: 50052
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        - name: KAFKA_TOPIC
+          value: "weather_topic"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
