@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proyecto2-config
+  namespace: proyecto2
+data:
+  KAFKA_TOPIC: "weather_topic"
+  KAFKA_GROUP_ID: "weather-consumer"
+  RABBITMQ_QUEUE: "weather_queue"
+  LOG_LEVEL: "info"

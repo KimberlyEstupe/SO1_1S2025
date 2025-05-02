@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proyecto2-ingress
+  namespace: proyecto2
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: "proyecto2.local"
+    http:
+      paths:
+      - path: /input
+        pathType: Prefix
+        backend:
+          service:
+            name: rust-api-service
+            port:
+              number: 8000
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana
+            port:
+              number: 3000
